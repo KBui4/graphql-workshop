@@ -1,1 +1,10 @@
 .env
+
+server
+*.out
+*.exe
+*.test
+
+.idea/
+.vscode/
+.DS_Store
