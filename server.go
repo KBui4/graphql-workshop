@@ -28,6 +28,7 @@ func main() {
 	}
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	srv.Use(extension.FixedComplexityLimit(100)) // Limit deeply nested queries 
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
