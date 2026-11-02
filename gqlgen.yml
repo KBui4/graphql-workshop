@@ -214,3 +214,6 @@ models:
     fields:
       seller:
         resolver: true
+
+  # Challenge 3 
+
