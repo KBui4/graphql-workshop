@@ -40,7 +40,7 @@ func ConnectDB() *mongo.Client {
 }
 
 func GetCollection(collectionName string) *mongo.Collection {
-	return ConnectDB().Database("combinedDB").Collection(collectionName)
+	return ConnectDB().Database("workshop_db").Collection(collectionName)
 }
 
 func GetEnvMongoURI() string {

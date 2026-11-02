@@ -197,6 +197,20 @@ models:
     model:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
+  DateTime:
+    model:
+      - github.com/99designs/gqlgen/graphql.Time
+  Any:
+    model:
+      - github.com/99designs/gqlgen/graphql.Any
 
   # Force field resolvers here
-  
+  User:
+    fields:
+      products:
+        resolver: true
+
+  Product:
+    fields:
+      seller:
+        resolver: true

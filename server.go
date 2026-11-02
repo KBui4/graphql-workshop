@@ -27,7 +27,13 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	resolvers := graph.Resolver{
+		UserCollection: configs.GetCollection("users"),
+		ProductCollection: configs.GetCollection("products"),
+		ReviewCollection: configs.GetCollection("review"),
+	}
+
+	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers}))
 	srv.Use(extension.FixedComplexityLimit(100)) // Limit deeply nested queries 
 
 	srv.AddTransport(transport.Options{})

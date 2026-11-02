@@ -3,13 +3,43 @@
 # https://graphql.org/learn/schema/
 # https://graphql.org/learn/queries/
 
+# Defining other types
+scalar Any
+scalar DateTime
+
 type User {
   id: ID!
   name: String!
-  email: String!
+  hobbies: [String!]!
+  products: [Product!]!
 }
 
+type Product {
+  id: ID!
+  seller: User!
+  price: Float!
+  name: String!
+  description: String!
+}
+
+input ProductFilter {
+  nameContains: String 
+  descriptionContains: String
+}
+
+# Challenge 1 Part A
+
+
 type Query {
-  user(id: ID!): User!
-  users: [User!]!
+  # Example queries for users
+  user(id: ID!): User!  # Fetches one user given an ID
+  users: [User!]!       # Fetches a list of all users
+
+  # Example queries for product
+  product(id: ID!): Product!
+  products(filter: ProductFilter): [Product!]!
+
+  # Challenge 1 Part B
+
+
 }
