@@ -36,8 +36,9 @@ type Query {
   users: [User!]!       # Fetches a list of all users
 
   # Example queries for product
-  product(id: ID!): Product!
-  products(filter: ProductFilter): [Product!]!
+  product(id: ID!): Product!                    # Fetches one product given an ID
+  products(filter: ProductFilter): [Product!]!  # Fetches a list of products by ProductFilter
+                                                # (Either by name, description, or all products if empty)
 
   # Challenge 1 Part B
 
