@@ -30,7 +30,7 @@ func main() {
 	resolvers := graph.Resolver{
 		UserCollection: configs.GetCollection("users"),
 		ProductCollection: configs.GetCollection("products"),
-		ReviewCollection: configs.GetCollection("review"),
+		ReviewCollection: configs.GetCollection("reviews"),
 	}
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers}))
