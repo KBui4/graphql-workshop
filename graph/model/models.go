@@ -16,3 +16,12 @@ type User struct {
 	Hobbies  []string         `json:"hobbies" bson:"hobbies"`
 	Products []bson.ObjectID  `json:"products" bson:"products"`
 }
+
+type Review struct {
+	ID          string        `json:"id" bson:"_id"`
+	Rating      int32         `json:"rating" bson:"rating"`
+	Title       string        `json:"title" bson:"title"`
+	Description string        `json:"description" bson:"description"`
+	Author      bson.ObjectID `json:"author" bson:"user"`
+	Product     bson.ObjectID `json:"product" bson:"product"`
+}
