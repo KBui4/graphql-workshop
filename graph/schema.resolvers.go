@@ -17,30 +17,24 @@ import (
 func (r *productResolver) Seller(ctx context.Context, obj *model.Product) (*model.User, error) {
 	// Field resolver for the seller field in Product
 
-	// Here we use the event resolver we previously defined for querying User by ID
-	return r.Query().User(ctx, obj.Seller.ID)
+	return r.Query().User(ctx, obj.Seller)
 }
 
 // User is the resolver for the user field.
-func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
+func (r *queryResolver) User(ctx context.Context, id bson.ObjectID) (*model.User, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	// Get object ID from hex string
-	objectId, err := bson.ObjectIDFromHex(id)
-	if err != nil {
+	var user model.User
+	var err error
+
+	// Query from users collection and unmarshal
+	result := r.UserCollection.FindOne(timeoutCtx, bson.M{"_id": id})
+	if err = result.Decode(&user); err != nil {
 		return nil, err
 	}
 
-	// Query for user and unmarshal
-	var dbUser model.DBUser
-	result := r.UserCollection.FindOne(timeoutCtx, bson.M{"_id": objectId})
-	if err = result.Decode(&dbUser); err != nil {
-		return nil, err
-	}
-
-	// Transform into GraphQL object and return
-	return model.TransformUser(&dbUser), err
+	return &user, err
 }
 
 // Users is the resolver for the users field.
@@ -49,46 +43,37 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	defer cancel()
 
 	var users []*model.User
-	var dbUsers []*model.DBUser
 
-	// Query from Database
+	// Query from users collection in database
 	cursor, err := r.UserCollection.Find(timeoutCtx, bson.M{})
 	if err != nil {
 		return users, err
 	}
 	defer cursor.Close(timeoutCtx)
 
-	// Unmarshal into dbUsers
-	if err = cursor.All(timeoutCtx, &dbUsers); err != nil {
+	// Unmarshal into users
+	if err = cursor.All(timeoutCtx, &users); err != nil {
 		return users, err
-	}
-
-	// Transform Mongo user to GraphQL user
-	for _, dbUser := range dbUsers {
-		users = append(users, model.TransformUser(dbUser))
 	}
 
 	return users, err
 }
 
 // Product is the resolver for the product field.
-func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product, error) {
-	// Essentially the same as user resolver
+func (r *queryResolver) Product(ctx context.Context, id bson.ObjectID) (*model.Product, error) {
 	timeoutCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	objectId, err := bson.ObjectIDFromHex(id)
-	if err != nil {
+	var product model.Product
+	var err error
+
+	// Query from products collection and unmarshal
+	result := r.ProductCollection.FindOne(timeoutCtx, bson.M{"_id": id})
+	if err = result.Decode(&product); err != nil {
 		return nil, err
 	}
 
-	var dbProduct model.DBProduct
-	result := r.ProductCollection.FindOne(timeoutCtx, bson.M{"_id": objectId})
-	if err = result.Decode(&dbProduct); err != nil {
-		return nil, err
-	}
-
-	return model.TransformProduct(&dbProduct), err
+	return &product, err
 }
 
 // Products is the resolver for the products field.
@@ -97,43 +82,37 @@ func (r *queryResolver) Products(ctx context.Context, filter *model.ProductFilte
 	defer cancel()
 
 	var products []*model.Product
-	var dbProducts []*model.DBProduct
+	var productQuery = bson.M{}
 
 	// Build the product query based on filter
-	var productQuery = bson.M{}
 	if filter != nil {
 		// Check for name
-		if filter.NameContains != nil && *filter.NameContains != "" {
+		if filter.Name != nil && *filter.Name != "" {
 			productQuery["name"] = bson.M{
-				"$regex":   *filter.NameContains,
+				"$regex":   *filter.Name,
 				"$options": "i", // Make it case-insensitive
 			}
 		}
 
 		// Check for description
-		if filter.DescriptionContains != nil && *filter.DescriptionContains != "" {
+		if filter.Description != nil && *filter.Description != "" {
 			productQuery["description"] = bson.M{
-				"$regex":   *filter.DescriptionContains,
+				"$regex":   *filter.Description,
 				"$options": "i",
 			}
 		}
 	}
 
-	// Query from Database
+	// Query from the products collection in database
 	cursor, err := r.ProductCollection.Find(timeoutCtx, productQuery)
 	if err != nil {
-		return nil, err
+		return products, err
 	}
 	defer cursor.Close(timeoutCtx)
 
-	// Unmarshal into dbProducts
-	if err = cursor.All(timeoutCtx, &dbProducts); err != nil {
-		return nil, err
-	}
-
-	// Transform Mongo product to GraphQL product
-	for _, dbProduct := range dbProducts {
-		products = append(products, model.TransformProduct(dbProduct))
+	// Unmarshal into products
+	if err = cursor.All(timeoutCtx, &products); err != nil {
+		return products, err
 	}
 
 	return products, err
@@ -150,7 +129,7 @@ func (r *userResolver) Products(ctx context.Context, obj *model.User) ([]*model.
 	// We loop through these objectIDs and sequentially query for the full product objects,
 	// appending them to products
 	for _, productRef := range obj.Products {
-		product, err := r.Query().Product(ctx, productRef.ID)
+		product, err := r.Query().Product(ctx, productRef)
 		if err != nil {
 			return nil, err
 		}

@@ -1,28 +1,41 @@
 # GraphQL Schema
+directive @goModel(
+	model: String
+	models: [String!]
+) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
 
 # This allows us to force resolvers; this is how we'll get our field resolvers.
 directive @goField (
   forceResolver: Boolean
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION 
 
+# This allows us to add bson tags for fields.
+directive @goTag(
+	key: String!
+	value: String
+) repeatable on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+
+# Define scalar type ObjectID
+scalar ObjectID
+
 type User {
-  id: ID!               # A ! means this field cannot be null.
-  name: String!
-  hobbies: [String!]!   # A ! next to a list means it cannot have any null objects.
-  products: [Product!]! @goField(forceResolver: true)
+  id: ObjectID! @goTag(key: "bson", value: "_id")            # A ! means this field cannot be null.
+  name: String! @goTag(key: "bson", value: "name")
+  hobbies: [String!]! @goTag(key: "bson", value: "hobbies")  # A ! next to a list means it cannot have any null objects.
+  products: [Product!]! @goTag(key: "bson", value: "products") @goField(forceResolver: true)
 }
 
 type Product {
-  id: ID!
-  seller: User! @goField(forceResolver: true)
-  price: Float!
-  name: String!
-  description: String!
+  id: ObjectID! @goTag(key: "bson", value: "_id")
+  seller: User! @goTag(key: "bson", value: "seller") @goField(forceResolver: true)
+  price: Float! @goTag(key: "bson", value: "price")
+  name: String! @goTag(key: "bson", value: "name")
+  description: String! @goTag(key: "bson", value: "description")
 }
 
 input ProductFilter {
-  nameContains: String 
-  descriptionContains: String
+  name: String @goTag(key: "bson", value: "name")
+  description: String @goTag(key: "bson", value: "description")
 }
 
 # GraphQL Cheatsheet: https://devhints.io/graphql
@@ -32,11 +45,11 @@ input ProductFilter {
 
 type Query {
   # Example queries for users
-  user(id: ID!): User!  # Fetches one user given an ID
+  user(id: ObjectID!): User!  # Fetches one user given an ID
   users: [User!]!       # Fetches a list of all users
 
   # Example queries for product
-  product(id: ID!): Product!                    # Fetches one product given an ID
+  product(id: ObjectID!): Product!                    # Fetches one product given an ID
   products(filter: ProductFilter): [Product!]!  # Fetches a list of products by ProductFilter
                                                 # (Either by name, description, or all products if empty)
 

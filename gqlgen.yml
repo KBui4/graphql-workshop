@@ -203,3 +203,7 @@ models:
   Any:
     model:
       - github.com/99designs/gqlgen/graphql.Any
+
+  ObjectID:
+    model:
+      - github.com/KBui4/graphql-workshop/graph/model.ObjectID
