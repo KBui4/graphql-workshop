@@ -1,17 +1,10 @@
 # GraphQL Schema
-# Resources: 
-# https://graphql.org/learn/schema/
-# https://graphql.org/learn/queries/
-
-# Defining other types
-scalar Any
-scalar DateTime
 
 type User {
-  id: ID!
+  id: ID!               # A ! means this field cannot be null.
   name: String!
-  hobbies: [String!]!
-  products: [Product!]!
+  hobbies: [String!]!   # A ! next to a list means it will not have any null objects,
+  products: [Product!]! # e.g., [Something, null, Other] is not allowed.
 }
 
 type Product {
@@ -26,6 +19,8 @@ input ProductFilter {
   nameContains: String 
   descriptionContains: String
 }
+
+# GraphQL Cheatsheet: https://devhints.io/graphql
 
 # Challenge 1 Part A
 
@@ -44,3 +39,7 @@ type Query {
 
 
 }
+
+# Resources to learn more: 
+# https://graphql.org/learn/schema/
+# https://graphql.org/learn/queries/
