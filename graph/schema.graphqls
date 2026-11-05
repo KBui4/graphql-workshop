@@ -1,15 +1,20 @@
 # GraphQL Schema
 
+# This allows us to force resolvers; this is how we'll get our field resolvers.
+directive @goField (
+  forceResolver: Boolean
+) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION 
+
 type User {
   id: ID!               # A ! means this field cannot be null.
   name: String!
-  hobbies: [String!]!   # A ! next to a list means it will not have any null objects,
-  products: [Product!]! # e.g., [Something, null, Other] is not allowed.
+  hobbies: [String!]!   # A ! next to a list means it cannot have any null objects.
+  products: [Product!]! @goField(forceResolver: true)
 }
 
 type Product {
   id: ID!
-  seller: User!
+  seller: User! @goField(forceResolver: true)
   price: Float!
   name: String!
   description: String!
