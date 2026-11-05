@@ -18,7 +18,7 @@ type User struct {
 }
 
 type Review struct {
-	ID          string        `json:"id" bson:"_id"`
+	ID          bson.ObjectID `json:"id" bson:"_id"`
 	Rating      int32         `json:"rating" bson:"rating"`
 	Title       string        `json:"title" bson:"title"`
 	Description string        `json:"description" bson:"description"`
