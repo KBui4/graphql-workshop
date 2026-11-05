@@ -3,8 +3,8 @@
 package model
 
 type ProductFilter struct {
-	Name        *string `json:"name,omitempty" bson:"name"`
-	Description *string `json:"description,omitempty" bson:"description"`
+	Name        *string `json:"name,omitempty" bson:"name,omitempty"`
+	Description *string `json:"description,omitempty" bson:"description,omitempty"`
 }
 
 type Query struct {

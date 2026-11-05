@@ -30,8 +30,8 @@ type Product {
 }
 
 input ProductFilter {
-  name: String        @goTag(key: "bson", value: "name")
-  description: String @goTag(key: "bson", value: "description")
+  name: String        @goTag(key: "bson", value: "name,omitempty")
+  description: String @goTag(key: "bson", value: "description,omitempty")
 }
 
 # GraphQL Cheatsheet: https://devhints.io/graphql
