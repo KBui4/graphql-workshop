@@ -5,7 +5,8 @@ directive @goField (
   forceResolver: Boolean
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION 
 
-# This allows us to add bson tags for fields.
+# This allows us to add bson tags to fields for generated models.
+# We don't need this for manually defined models (i.e., models with ID reference).
 directive @goTag(
 	key: String!
 	value: String
@@ -15,18 +16,18 @@ directive @goTag(
 scalar ObjectID
 
 type User {
-  id: ObjectID!         @goTag(key: "bson", value: "_id")      # A ! means this field cannot be null.
-  name: String!         @goTag(key: "bson", value: "name")
-  hobbies: [String!]!   @goTag(key: "bson", value: "hobbies")  # A ! next to a list means it cannot have any null objects.
-  products: [Product!]! @goTag(key: "bson", value: "products") @goField(forceResolver: true)
+  id: ObjectID!         # A ! means this field cannot be null.
+  name: String!         
+  hobbies: [String!]!   # A ! next to a list means it cannot have any null objects.
+  products: [Product!]! @goField(forceResolver: true)
 }
 
 type Product {
-  id: ObjectID!        @goTag(key: "bson", value: "_id")
-  seller: User!        @goTag(key: "bson", value: "seller") @goField(forceResolver: true)
-  price: Float!        @goTag(key: "bson", value: "price")
-  name: String!        @goTag(key: "bson", value: "name")
-  description: String! @goTag(key: "bson", value: "description")
+  id: ObjectID!        
+  seller: User!        @goField(forceResolver: true)
+  price: Float!        
+  name: String!        
+  description: String! 
 }
 
 input ProductFilter {
