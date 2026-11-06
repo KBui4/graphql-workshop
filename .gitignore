@@ -5,6 +5,4 @@ server
 *.exe
 *.test
 
-.idea/
-.vscode/
 .DS_Store

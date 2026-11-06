@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.graphqls": "graphql"
+  },
+  "[graphql]": {
+    "editor.hover.enabled": "on"
+  }
+}
