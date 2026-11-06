@@ -13,6 +13,7 @@ directive @goTag(
 ) repeatable on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 
 # Define scalar type ObjectID
+"""Links to MongoDB bson.ObjectID"""
 scalar ObjectID
 
 type User {
@@ -30,6 +31,7 @@ type Product {
   description: String! 
 }
 
+# For searching when querying products
 input ProductFilter {
   name: String        @goTag(key: "bson", value: "name,omitempty")
   description: String @goTag(key: "bson", value: "description,omitempty")
