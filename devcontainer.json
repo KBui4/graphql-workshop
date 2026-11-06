@@ -3,8 +3,14 @@
 
   "customizations": {
     "vscode": {
-      "extensions": ["streetsidesoftware.code-spell-checker"]
+      "extensions": [
+        "golang.go",
+        "graphql.vscode-graphql",
+        "graphql.vscode-graphql-syntax"
+      ]
     }
   },
-  "forwardPorts": [3000]
+  "forwardPorts": [3000],
+  "onCreateCommand": "go mod download",
+  "postCreateCommand": "go mod tidy"
 }
