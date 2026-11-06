@@ -1,2 +1,0 @@
-schema: "graph/schema.graphqls"
-documents: "*/.graphql"
