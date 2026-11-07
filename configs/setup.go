@@ -3,7 +3,6 @@ package configs
 import (
 	"context"
 	"log"
-	"os"
 	"sync"
 	"time"
 
@@ -23,7 +22,7 @@ func ConnectDB() *mongo.Client {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
-		client, err := mongo.Connect(options.Client().ApplyURI(GetEnvMongoURI()))
+		client, err := mongo.Connect(options.Client().ApplyURI("mongodb+srv://workshop_user:ccqXXxl7ahiE4RTZ@graphql.snfilnf.mongodb.net/"))
 		if err != nil {
 			log.Fatalf("Unable to create MongoDB client")
 		}
@@ -41,13 +40,4 @@ func ConnectDB() *mongo.Client {
 
 func GetCollection(collectionName string) *mongo.Collection {
 	return ConnectDB().Database("workshop_db").Collection(collectionName)
-}
-
-func GetEnvMongoURI() string {
-	uri, exists := os.LookupEnv("MONGODB_URI")
-	if !exists {
-		log.Fatalf("Error loading 'MONGODB_URI' from the .env file")
-	}
-
-	return uri
 }

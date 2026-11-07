@@ -1,42 +1,54 @@
 # GraphQL Schema
-# Resources: 
-# https://graphql.org/learn/schema/
-# https://graphql.org/learn/queries/
 
-# Defining other types
-scalar Any
-scalar DateTime
+# This allows us to force resolvers; this is how we'll get our field resolvers.
+directive @goField (
+  forceResolver: Boolean
+) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION 
+
+# This allows us to add bson tags to fields for generated models.
+# We don't need this for manually defined models (i.e., models with ID reference).
+directive @goTag(
+	key: String!
+	value: String
+) repeatable on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+
+# Define scalar type ObjectID
+"""Links to MongoDB bson.ObjectID"""
+scalar ObjectID
 
 type User {
-  id: ID!
-  name: String!
-  hobbies: [String!]!
-  products: [Product!]!
+  id: ObjectID!         # A ! means this field cannot be null.
+  name: String!         
+  hobbies: [String!]!   # A ! next to a list means it cannot have any null objects.
+  products: [Product!]! @goField(forceResolver: true)
 }
 
 type Product {
-  id: ID!
-  seller: User!
-  price: Float!
-  name: String!
-  description: String!
+  id: ObjectID!        
+  seller: User!        @goField(forceResolver: true)
+  price: Float!        
+  name: String!        
+  description: String! 
 }
 
+# For searching when querying products
 input ProductFilter {
-  nameContains: String 
-  descriptionContains: String
+  name: String        @goTag(key: "bson", value: "name,omitempty")
+  description: String @goTag(key: "bson", value: "description,omitempty")
 }
+
+# GraphQL Cheatsheet: https://devhints.io/graphql
 
 # Challenge 1 Part A
 
 
 type Query {
   # Example queries for users
-  user(id: ID!): User!  # Fetches one user given an ID
+  user(id: ObjectID!): User!  # Fetches one user given an ID
   users: [User!]!       # Fetches a list of all users
 
   # Example queries for product
-  product(id: ID!): Product!                    # Fetches one product given an ID
+  product(id: ObjectID!): Product!                    # Fetches one product given an ID
   products(filter: ProductFilter): [Product!]!  # Fetches a list of products by ProductFilter
                                                 # (Either by name, description, or all products if empty)
 
@@ -44,3 +56,7 @@ type Query {
 
 
 }
+
+# Resources to learn more: 
+# https://graphql.org/learn/schema/
+# https://graphql.org/learn/queries/

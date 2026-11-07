@@ -2,25 +2,10 @@
 
 package model
 
-type Product struct {
-	ID          string  `json:"id"`
-	Seller      *User   `json:"seller"`
-	Price       float64 `json:"price"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-}
-
 type ProductFilter struct {
-	NameContains        *string `json:"nameContains,omitempty"`
-	DescriptionContains *string `json:"descriptionContains,omitempty"`
+	Name        *string `json:"name,omitempty" bson:"name,omitempty"`
+	Description *string `json:"description,omitempty" bson:"description,omitempty"`
 }
 
 type Query struct {
-}
-
-type User struct {
-	ID       string     `json:"id"`
-	Name     string     `json:"name"`
-	Hobbies  []string   `json:"hobbies"`
-	Products []*Product `json:"products"`
 }
