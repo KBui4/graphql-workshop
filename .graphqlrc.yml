@@ -1,2 +1,2 @@
 schema: graph/*.graphqls
-documents: '**/*.{graphql,gql}'
+documents: "**/*.{graphql,gql}"
