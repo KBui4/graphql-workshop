@@ -22,6 +22,6 @@ type Review struct {
 	Rating      int32         `json:"rating" bson:"rating"`
 	Title       string        `json:"title" bson:"title"`
 	Description string        `json:"description" bson:"description"`
-	Author      bson.ObjectID `json:"author" bson:"user"`
+	Author      bson.ObjectID `json:"author" bson:"author"`
 	Product     bson.ObjectID `json:"product" bson:"product"`
 }
