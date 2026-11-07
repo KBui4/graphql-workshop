@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "golang.go",
+    "GraphQL.vscode-graphql",
+    "GraphQL.vscode-graphql-syntax",
+    "mongodb.mongodb-vscode"
+  ]
+}
