@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run server",
+      "type": "process",
+      "command": "go",
+      "args": ["run", "server.go"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$go"],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Generate GraphQL code",
+      "type": "process",
+      "command": "go",
+      "args": ["tool", "gqlgen", "generate"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": ["$go"]
+    }
+  ]
+}
