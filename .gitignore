@@ -1,10 +1,10 @@
-.env
-
 server
 *.out
 *.exe
 *.test
 
 .idea/
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
 .DS_Store
